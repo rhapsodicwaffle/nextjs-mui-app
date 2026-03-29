@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Container,
   List,
@@ -9,10 +11,27 @@ import {
 import Link from 'next/link'
 import { getUsers } from '@/lib/users'
 import PageHeader from '@/components/ui/PageHeader'
+import { useEffect, useState } from 'react'
+import type { User } from '@/lib/users'
 
-// Async Server Component — no 'use client' needed
-export default async function UsersPage() {
-  const users = await getUsers()
+export default function UsersPage() {
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getUsers().then((data) => {
+      setUsers(data)
+      setLoading(false)
+    })
+  }, [])
+
+  if (loading) {
+    return (
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        <Typography>Loading...</Typography>
+      </Container>
+    )
+  }
 
   return (
     <Container maxWidth="md" sx={{ py: 6 }}>
@@ -25,15 +44,13 @@ export default async function UsersPage() {
       <List disablePadding>
         {users.map((user) => (
           <ListItem key={user.id} disablePadding divider>
-            <Link href={`/users/${user.id}`} passHref legacyBehavior>
-              <ListItemButton component="a">
-                <ListItemText
-                  primary={user.name}
-                  secondary={user.email}
-                  primaryTypographyProps={{ fontWeight: 500 }}
-                />
-              </ListItemButton>
-            </Link>
+            <ListItemButton href={`/users/${user.id}`} LinkComponent={Link}>
+              <ListItemText
+                primary={user.name}
+                secondary={user.email}
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>

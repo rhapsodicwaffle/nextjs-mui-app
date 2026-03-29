@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeProvider, useColorMode } from '@/context/ColorModeContext';
 import { getTheme } from '@/theme/theme';
-import AppLayout from '@/components/layout/AppLayout';
 
 function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
   const { mode } = useColorMode();
@@ -13,7 +12,7 @@ function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppLayout>{children}</AppLayout>
+      {children}
     </ThemeProvider>
   );
 }

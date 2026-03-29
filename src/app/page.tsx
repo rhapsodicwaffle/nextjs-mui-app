@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Box, Button, Container, Divider, Paper, Stack, Typography } from '@mui/material';
 import UserCard from '@/components/ui/UserCard';
@@ -48,21 +50,15 @@ export default function Home() {
               Explore Pages
             </Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <Link href="/users" passHref legacyBehavior>
-                <Button variant="contained" component="a">
-                  Users (async Server Component)
-                </Button>
-              </Link>
-              <Link href="/users/1" passHref legacyBehavior>
-                <Button variant="outlined" component="a">
-                  User Detail (/users/[id])
-                </Button>
-              </Link>
-              <Link href="/components" passHref legacyBehavior>
-                <Button variant="outlined" color="secondary" component="a">
-                  Component Library Demo
-                </Button>
-              </Link>
+              <Button variant="contained" href="/users" LinkComponent={Link}>
+                Users (async Server Component)
+              </Button>
+              <Button variant="outlined" href="/users/1" LinkComponent={Link}>
+                User Detail (/users/[id])
+              </Button>
+              <Button variant="outlined" color="secondary" href="/components" LinkComponent={Link}>
+                Component Library Demo
+              </Button>
             </Stack>
           </Box>
         </Stack>

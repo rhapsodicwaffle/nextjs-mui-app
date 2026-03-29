@@ -19,8 +19,10 @@ export function useColorMode() {
 
 export function ColorModeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setMode] = useState<PaletteMode>('light');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const stored = localStorage.getItem('colorMode') as PaletteMode | null;
     if (stored === 'light' || stored === 'dark') {
       setMode(stored);
@@ -39,6 +41,11 @@ export function ColorModeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const value = useMemo(() => ({ mode, toggleColorMode }), [mode]);
+
+  // Prevent flash of wrong theme
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <ColorModeContext.Provider value={value}>

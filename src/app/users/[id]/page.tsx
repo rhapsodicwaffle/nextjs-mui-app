@@ -1,5 +1,6 @@
+'use client';
+
 import { notFound } from 'next/navigation'
-import type { Metadata } from 'next'
 import {
   Box,
   Button,
@@ -12,24 +13,33 @@ import {
 import Link from 'next/link'
 import { getUserById } from '@/lib/users'
 import PageHeader from '@/components/ui/PageHeader'
+import { useEffect, useState } from 'react'
+import type { User } from '@/lib/users'
 
 type Props = { params: Promise<{ id: string }> }
 
-// Dynamic metadata — also runs on the server
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params
-  const user = await getUserById(id)
-  if (!user) return { title: 'User Not Found' }
-  return {
-    title: `${user.name} | Users`,
-    description: `Profile page for ${user.name}`,
-  }
-}
+export default function UserDetailPage({ params }: Props) {
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [id, setId] = useState<string>('')
 
-// Async Server Component
-export default async function UserDetailPage({ params }: Props) {
-  const { id } = await params
-  const user = await getUserById(id)
+  useEffect(() => {
+    params.then((p) => {
+      setId(p.id)
+      getUserById(p.id).then((data) => {
+        setUser(data)
+        setLoading(false)
+      })
+    })
+  }, [params])
+
+  if (loading) {
+    return (
+      <Container maxWidth="sm" sx={{ py: 6 }}>
+        <Typography>Loading...</Typography>
+      </Container>
+    )
+  }
 
   if (!user) notFound()
 
@@ -64,11 +74,9 @@ export default async function UserDetailPage({ params }: Props) {
 
       <Box display="flex" gap={2} flexWrap="wrap" alignItems="center">
         <Chip label={`ID: ${user.id}`} size="small" color="primary" variant="outlined" />
-        <Link href="/users" passHref legacyBehavior>
-          <Button variant="outlined" size="small" component="a">
-            ← Back to Users
-          </Button>
-        </Link>
+        <Button variant="outlined" size="small" href="/users" LinkComponent={Link}>
+          ← Back to Users
+        </Button>
       </Box>
     </Container>
   )
