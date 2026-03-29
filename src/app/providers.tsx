@@ -3,7 +3,9 @@
 import { useMemo } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { ColorModeProvider, useColorMode } from '@/context/ColorModeContext';
+import { AuthProvider } from '@/context/AuthContext';
 import { getTheme } from '@/theme/theme';
+import { Toaster } from 'sonner';
 
 function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
   const { mode } = useColorMode();
@@ -12,6 +14,7 @@ function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Toaster position="top-right" richColors closeButton />
       {children}
     </ThemeProvider>
   );
@@ -20,7 +23,9 @@ function MuiThemeWrapper({ children }: { children: React.ReactNode }) {
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ColorModeProvider>
-      <MuiThemeWrapper>{children}</MuiThemeWrapper>
+      <AuthProvider>
+        <MuiThemeWrapper>{children}</MuiThemeWrapper>
+      </AuthProvider>
     </ColorModeProvider>
   );
 }

@@ -15,12 +15,18 @@ import {
   Typography,
   Button,
   useTheme,
+  Avatar,
+  Menu,
+  MenuItem,
 } from '@mui/material'
+import { useAuth } from '@/context/AuthContext'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import { useRouter } from 'next/navigation'
 
 const NAV_LINKS = [
   { label: 'Home', href: '/' },
   { label: 'Users', href: '/users' },
+  { label: 'Posts', href: '/posts' },
   { label: 'Components', href: '/components' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
@@ -44,9 +50,23 @@ function HamburgerIcon() {
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const { user, isAuthenticated, logout } = useAuth()
+  const router = useRouter()
   const theme = useTheme()
 
   const handleDrawerToggle = () => setMobileOpen((prev) => !prev)
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+  const handleLogout = () => {
+    logout()
+    handleMenuClose()
+    router.push('/')
+  }
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
@@ -118,6 +138,48 @@ export default function Header() {
           </Box>
 
           <ThemeToggle />
+
+          {/* Auth buttons */}
+          {isAuthenticated ? (
+            <>
+              <IconButton onClick={handleMenuOpen} sx={{ ml: 1 }}>
+                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+                  {user?.name?.charAt(0).toUpperCase()}
+                </Avatar>
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                <MenuItem disabled>
+                  <Typography variant="body2">{user?.email}</Typography>
+                </MenuItem>
+                <Divider />
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </>
+          ) : (
+            <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 1, ml: 1 }}>
+              <Button
+                component="a"
+                href="/auth/login"
+                color="inherit"
+                sx={{ textTransform: 'none' }}
+              >
+                Login
+              </Button>
+              <Button
+                component="a"
+                href="/auth/signup"
+                variant="outlined"
+                color="inherit"
+                sx={{ textTransform: 'none' }}
+              >
+                Sign Up
+              </Button>
+            </Box>
+          )}
         </Toolbar>
       </AppBar>
 

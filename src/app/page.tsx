@@ -49,15 +49,21 @@ export default function Home() {
             <Typography variant="h5" fontWeight={700} gutterBottom>
               Explore Pages
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} flexWrap="wrap">
               <Button variant="contained" href="/users" LinkComponent={Link}>
                 Users (async Server Component)
               </Button>
               <Button variant="outlined" href="/users/1" LinkComponent={Link}>
                 User Detail (/users/[id])
               </Button>
-              <Button variant="outlined" color="secondary" href="/components" LinkComponent={Link}>
-                Component Library Demo
+              <Button variant="outlined" href="/posts" LinkComponent={Link} color="secondary">
+                Posts (SWR + CRUD)
+              </Button>
+              <Button variant="outlined" href="/components" LinkComponent={Link} color="secondary">
+                Component Library
+              </Button>
+              <Button variant="outlined" href="/auth/login" LinkComponent={Link} color="success">
+                Login (Form + Validation)
               </Button>
             </Stack>
           </Box>
